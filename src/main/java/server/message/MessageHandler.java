@@ -1,5 +1,6 @@
 package server.message;
 
+import server.ChatServer;
 import server.UserListObservable;
 import server.UserListObserver;
 
@@ -16,10 +17,11 @@ public class MessageHandler extends Thread {
     UserListObservable userListObservable;
     MessageObservable observable;
     MessageObserver observer;
+    ChatServer parent;
     String client;
     boolean isRunning = true;
 
-    public MessageHandler(Socket socket, MessageObservable observable, UserListObservable userListObservable) {
+    public MessageHandler(Socket socket, MessageObservable observable, UserListObservable userListObservable, ChatServer parent) {
         this.client = client;
         try {
             this.socket = socket;
@@ -29,6 +31,7 @@ public class MessageHandler extends Thread {
             this.observable = observable;
             this.observer = new MessageObserver(out, client);
             observable.addObserver(this.observer);
+            this.parent = parent;
         } catch (IOException e) {
             System.out.println("INFO: Client -> " + client + " throws error while instatniating");
         }
@@ -65,6 +68,9 @@ public class MessageHandler extends Thread {
                 }
             } catch (IOException ex) {
                 System.out.println("INFO: CLIENT -> " + client + " Disconnected");
+                userListObservable.removeUser(client);
+                parent.removeSocket(socket);
+                observable.deleteObserver(observer);
                 isRunning = false;
             }
         }

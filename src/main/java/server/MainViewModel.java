@@ -1,6 +1,7 @@
 package server;
 
 import de.saxsys.mvvmfx.ViewModel;
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -54,7 +55,9 @@ public class MainViewModel implements ViewModel {
         users = updated;
         System.out.println("Update list:");
         users.stream().forEach(i -> System.out.println(i));
-        tblUsers.set(FXCollections.observableArrayList(users));
+        Platform.runLater(() -> {
+            tblUsers.set(FXCollections.observableArrayList(users));
+        });
         System.out.println("---");
     }
 

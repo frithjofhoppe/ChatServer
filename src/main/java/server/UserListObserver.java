@@ -16,8 +16,6 @@ public class UserListObserver implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("OBSERVER in");
         viewModel.refreshUsers((ArrayList<String>) arg);
-        System.out.println("OBSERVER out");
     }
 }

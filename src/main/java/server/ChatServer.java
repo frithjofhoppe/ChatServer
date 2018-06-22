@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ChatServer extends Thread {
 
@@ -39,13 +40,22 @@ public class ChatServer extends Thread {
         });
     }
 
+    public void removeSocket(Socket socket){
+        Optional<Socket> result = sockets.stream().filter(i -> i == socket).findFirst();
+        if(result.isPresent()){
+            sockets.remove(result.get());
+            System.out.println("REmoved socket");
+        }
+        System.out.println("REmoved socket finished");
+    }
+
     @Override
     public void run() {
         try {
             System.out.println("INFO: ChatServer started");
             while (isRunning) {
                 Socket socket = serverSocket.accept();
-                MessageHandler handler = new MessageHandler(socket, message, userList);
+                MessageHandler handler = new MessageHandler(socket, message, userList, this);
                 sockets.add(socket);
                 System.out.println("INFO: Client established connection");
                 counter++;

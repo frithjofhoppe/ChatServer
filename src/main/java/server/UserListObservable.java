@@ -18,9 +18,7 @@ public class UserListObservable extends Observable {
         if(!result.isPresent()) {
             users.add(user);
             setChanged();
-            System.out.println("NOTIFY");
             notifyObservers(users);
-            System.out.println("NOTIFIED");
             notifyAll();
             return true;
         }
@@ -28,8 +26,20 @@ public class UserListObservable extends Observable {
     }
 
     public synchronized void removeUser(String user) {
-        users.removeIf(i -> i.toUpperCase() == user.toUpperCase());
-        hasChanged();
-        notifyObservers();
+        users.forEach(i -> {
+            System.out.println(i);
+            if(i.toUpperCase().equals(user.toUpperCase())){
+                System.out.println("MATCHED");
+            }
+        });
+        Optional<String> result = users.stream().filter(i -> i.toUpperCase().equals(user.toUpperCase())).findFirst();
+        if(result.isPresent()){
+            String value = result.get();
+            users.remove(value);
+            setChanged();
+            notifyObservers(users);
+            System.out.println("REMOVED");
+        }
+        System.out.println("REMOVED finished");
     }
 }
