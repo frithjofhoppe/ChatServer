@@ -2,10 +2,7 @@ package server;
 
 import de.saxsys.mvvmfx.ViewModel;
 import javafx.application.Platform;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 
 import java.io.IOException;
@@ -18,28 +15,46 @@ public class MainViewModel implements ViewModel {
     ChatServer server;
     StringProperty lblIpAddress = new SimpleStringProperty();
     StringProperty lblStatus = new SimpleStringProperty();
+    BooleanProperty txtPort = new SimpleBooleanProperty();
     ListProperty<String> tblUsers = new SimpleListProperty<>();
-    ArrayList<String> users = new ArrayList<>();
+    ArrayList<String> users;
     UserListObservable userList;
     UserListObserver userListObserver;
 
     public MainViewModel() {
-        userList = new UserListObservable(users);
-        userListObserver = new UserListObserver(this);
-        userList.addObserver(userListObserver);
+        initalizeData();
         initalizeView();
         intializeModel();
     }
 
-    public void stopServer(){
-        if(server != null) server.shutdown();
-        lblStatus.set("DISABLED");
+    private void initalizeData() {
+        users = new ArrayList<>();
+        userList = new UserListObservable(users);
+        userListObserver = new UserListObserver(this);
+        userList.addObserver(userListObserver);
+    }
+
+    public void stopServer() {
+        if (server != null) {
+            server.shutdown();
+            Platform.runLater(() -> {
+                lblStatus.set("DISABLED");
+                txtPort.set(false);
+            });
+            server = null;
+        }
     }
 
     public void startServer(int port) {
-        server = new ChatServer(port, userList);
-        server.start();
-        lblStatus.set("ENABLED");
+        if(server == null) {
+            initalizeData();
+            server = new ChatServer(port, userList);
+            server.start();
+            Platform.runLater(() -> {
+                lblStatus.set("ENABLED");
+                txtPort.set(true);
+            });
+        }
     }
 
     private void intializeModel() {
@@ -48,17 +63,17 @@ public class MainViewModel implements ViewModel {
 
     private void initalizeView() {
         lblIpAddress.setValue(getIpAddress());
+        lblStatus.setValue("DISABLED");
+        txtPort.setValue(false);
         refreshUsers(users);
     }
 
     public synchronized void refreshUsers(ArrayList<String> updated) {
         users = updated;
-        System.out.println("Update list:");
         users.stream().forEach(i -> System.out.println(i));
         Platform.runLater(() -> {
             tblUsers.set(FXCollections.observableArrayList(users));
         });
-        System.out.println("---");
     }
 
     private String getIpAddress() {

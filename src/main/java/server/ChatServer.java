@@ -38,6 +38,11 @@ public class ChatServer extends Thread {
                 e.printStackTrace();
             }
         });
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeSocket(Socket socket){
@@ -48,6 +53,7 @@ public class ChatServer extends Thread {
         }
         System.out.println("REmoved socket finished");
     }
+
 
     @Override
     public void run() {

@@ -31,6 +31,8 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         lbl_ipAddress.textProperty().bind(viewModel.lblIpAddress);
+        lbl_status.textProperty().bindBidirectional(viewModel.lblStatus);
+        txt_port.disableProperty().bind(viewModel.txtPort);
         tbl_users.itemsProperty().bindBidirectional(viewModel.tblUsers);
     }
 
