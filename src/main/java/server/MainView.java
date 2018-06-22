@@ -23,6 +23,8 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     @FXML
     Button btn_stop;
     @FXML
+    Button btn_close;
+    @FXML
     ListView tbl_users;
 
     @InjectViewModel
@@ -49,5 +51,10 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     @FXML
     public void handle_btn_stop_click() {
         viewModel.stopServer();
+    }
+
+    @FXML
+    public void handle_btn_close_click(){
+        viewModel.closeApplication();
     }
 }

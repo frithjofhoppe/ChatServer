@@ -4,6 +4,10 @@ import de.saxsys.mvvmfx.ViewModel;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import org.omg.CORBA.Environment;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -34,6 +38,27 @@ public class MainViewModel implements ViewModel {
         userList.addObserver(userListObserver);
     }
 
+    public void closeApplication() {
+
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Close application");
+        alert.setHeaderText("Do you want to close the application");
+        alert.setContentText("The server will therefore be stopped");
+
+        ButtonType buttonYES = new ButtonType("Yes");
+        ButtonType buttonNO = new ButtonType("No");
+
+        alert.getButtonTypes().setAll(buttonYES, buttonNO);
+
+        Optional<ButtonType> option = alert.showAndWait();
+
+        if (option.get() == buttonYES) {
+            stopServer();
+            System.exit(0);
+        }
+    }
+
     public void stopServer() {
         if (server != null) {
             server.shutdown();
@@ -46,7 +71,7 @@ public class MainViewModel implements ViewModel {
     }
 
     public void startServer(int port) {
-        if(server == null) {
+        if (server == null) {
             initalizeData();
             server = new ChatServer(port, userList);
             server.start();
