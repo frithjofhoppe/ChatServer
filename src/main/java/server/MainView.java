@@ -57,4 +57,10 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
     public void handle_btn_close_click(){
         viewModel.closeApplication();
     }
+
+    @FXML
+    public void handle_lbl_ipAddress_click(){
+        String content = lbl_ipAddress.getText();
+        viewModel.copyToClipboard(content);
+    }
 }

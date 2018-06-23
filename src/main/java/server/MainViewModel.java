@@ -5,9 +5,9 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import org.omg.CORBA.Environment;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -87,7 +87,7 @@ public class MainViewModel implements ViewModel {
     }
 
     private void initalizeView() {
-        lblIpAddress.setValue(getIpAddress());
+        lblIpAddress.setValue(getHostname());
         lblStatus.setValue("DISABLED");
         txtPort.setValue(false);
         refreshUsers(users);
@@ -101,10 +101,17 @@ public class MainViewModel implements ViewModel {
         });
     }
 
-    private String getIpAddress() {
+    public void copyToClipboard(String toCopy){
+        final Clipboard clipboard = Clipboard.getSystemClipboard();
+        final ClipboardContent content = new ClipboardContent();
+        content.putString(toCopy);
+        clipboard.setContent(content);
+    }
+
+    private String getHostname() {
         try {
             InetAddress ip = InetAddress.getLocalHost();
-            return ip.getHostAddress();
+            return ip.getHostName();
         } catch (IOException e) {
 
         }
