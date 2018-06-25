@@ -14,7 +14,7 @@ public class UserListObservable extends Observable {
     }
 
     public synchronized boolean addUserIfNotExists(String user) {
-        Optional<String> result = users.stream().filter(i -> i.toUpperCase() == user.toUpperCase()).findFirst();
+        Optional<String> result = users.stream().filter(i -> i.toUpperCase().equals(user.toUpperCase())).findFirst();
         if (!result.isPresent()) {
             users.add(user);
             setChanged();
