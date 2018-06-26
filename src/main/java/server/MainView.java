@@ -43,9 +43,9 @@ public class MainView implements FxmlView<MainViewModel>, Initializable {
         String port = txt_port.getText();
         if(port.matches("^\\d{5}$")) {
             viewModel.startServer(Integer.parseInt(port));
-            System.out.println("Intialized ChatServer successfuly");
+        }else{
+            Dialog.InvalidContent();
         }
-        System.out.println("Intialized ChatServer unsuccessfully");
     }
 
     @FXML
